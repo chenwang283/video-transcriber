@@ -5,3 +5,6 @@ reports/
 *.mp4
 *.mov
 *.mkv
+.venv/
+.DS_Store
+**/.DS_Store

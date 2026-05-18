@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 
 from prompts import PART_1_PROMPT, PART_2_PROMPT_TEMPLATE
 
-CLAUDE_MODEL = "claude-opus-4-7"
+CLAUDE_MODEL = "claude-sonnet-4-6"
 SUPPORTED_EXTS = {".mp4", ".m4a", ".mp3", ".wav", ".mov", ".mkv", ".webm"}
 
 AAI_BASE = "https://api.assemblyai.com"
@@ -192,7 +192,7 @@ def process_video(video_path: Path, out_dir: Path, anthropic_client: Anthropic, 
     t0 = time.time()
     print("  Generating HTML report with Claude...")
     part2 = PART_2_PROMPT_TEMPLATE.replace("[session context input]", session_context)
-    html = call_claude(anthropic_client, transcript_text, part2, max_tokens=100000)
+    html = call_claude(anthropic_client, transcript_text, part2, max_tokens=32000)
     html = strip_html_fence(html)
     report_file.write_text(html, encoding="utf-8")
     print(f"  Report done in {time.time()-t0:.0f}s -> {report_file}")
