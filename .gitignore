@@ -8,3 +8,4 @@ reports/
 .venv/
 .DS_Store
 **/.DS_Store
+.claude/worktrees/
