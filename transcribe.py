@@ -138,7 +138,7 @@ def call_claude(client: Anthropic, transcript_text: str, instruction: str, max_t
 
 
 def strip_html_fence(s: str) -> str:
-    """Strip ```html ... ``` fences if Claude included them despite instructions."""
+    """Strip ``` fences if Claude wrapped the output in a code block."""
     s = s.strip()
     if s.startswith("```"):
         first_newline = s.find("\n")
@@ -156,7 +156,7 @@ def process_video(video_path: Path, out_dir: Path, anthropic_client: Anthropic, 
 
     transcript_file = target / "transcript.json"
     context_file = target / "session_context.txt"
-    report_file = target / "report.html"
+    report_file = target / "report.md"
 
     if report_file.exists() and not force:
         print(f"  Skipping (report exists): {report_file.name}")
@@ -192,9 +192,9 @@ def process_video(video_path: Path, out_dir: Path, anthropic_client: Anthropic, 
     t0 = time.time()
     print("  Generating HTML report with Claude...")
     part2 = PART_2_PROMPT_TEMPLATE.replace("[session context input]", session_context)
-    html = call_claude(anthropic_client, transcript_text, part2, max_tokens=32000)
-    html = strip_html_fence(html)
-    report_file.write_text(html, encoding="utf-8")
+    md = call_claude(anthropic_client, transcript_text, part2, max_tokens=32000)
+    md = strip_html_fence(md)
+    report_file.write_text(md, encoding="utf-8")
     print(f"  Report done in {time.time()-t0:.0f}s -> {report_file}")
 
 

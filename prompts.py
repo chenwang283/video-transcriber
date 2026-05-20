@@ -19,77 +19,215 @@ Output: Compile your answers into a single Session Context block written in plai
 
 PART_2_PROMPT_TEMPLATE = """This session follows a deliberate pedagogical structure: [session context input]
 
-The session context for this tutoring session has been provided above. Use it throughout all analysis to distinguish lesson-induced errors from genuine student weaknesses and to interpret student behavior in the context of how this session was structured.
-Your task is to analyze the tutoring data provided and produce a structured HTML report. The primary level of detail must be sufficient for a different tutor — one who has never worked with this student — to fully understand the student's problems and the tutor's solutions on both a strategic and tactical level. Each strategic section must also include a brief parent-facing distillation that simplifies the concepts for a non-technical audience with no mathematical background.
+# SAT Tutoring Session Report — Generator Prompt
 
-DEFINITIONS — USE THESE EXACTLY
-Strategy: Your overarching plan and direction to achieve a specific goal — the "what" and the "why."
-Tactic: The specific, short-term actions and executions you take to implement that strategy — the "how."
-Error origin:
-Organic: The error reflects a genuine, pre-existing student habit, reasoning gap, or comprehension pattern. It would appear regardless of whether a new technique had been introduced at that point in the session. Highest-priority signal for coaching.
-Lesson-Induced: The error occurred because a specific technique, concept, or piece of information had not yet been taught at that point in the session. The mistake was expected by the lesson design and does not on its own indicate a persistent student weakness.
-Mixed: The root error is lesson-induced, but the moment contains a genuine sub-component — a behavior the student exhibited that would persist even if the technique were known. Always extract and label the genuine sub-component separately within the tactical card.
-Evidence source:
-Student Side: What the student said or did that revealed the problem — their direct output, statement, or behavior.
-Tutor Diagnostic: What the tutor said or did after observing the student's output — how the tutor identified, named, or probed the problem before introducing a solution.
-Tutor Setup: Applies to lesson-induced errors only. What the tutor deliberately structured or withheld so the student would encounter a predictable failure point.
-Evidence type:
-Observable: Directly quoted or closely paraphrased from the data. The behavior or statement is on the record.
-Inference: Derived from surrounding context — the tutor's framing, lesson structure, word choice, or sequencing — rather than a direct statement. When using inference, always cite the specific observable fact that supports it and label it clearly.
+The session context for this tutoring session has been provided above. Use it throughout all analysis to tell the difference between lesson-induced errors and real student weaknesses, and to read student behavior in light of how the session was structured.
 
-EVIDENCE SOURCES — DRAW FROM ALL THREE
-When identifying strategic issues and their tactical instances, draw simultaneously from:
-In-session errors and struggles — moments where the student got something wrong, expressed confusion, gave an incorrect answer, or demonstrated a gap.
-Student behavioral signals — reactions to questions, self-assessments, expressions of confidence or limitation, emotional responses, moments of hesitation or complete cessation of effort.
-Tutor structural and framing choices — how the tutor sequenced the lesson, what the tutor's justification for each technique reveals about prior student weaknesses, how the tutor framed the value of each method, what problems the lesson was designed to address before the session began.
-Do not limit analysis to in-session errors only. Behavioral signals and tutor framing are equally valid diagnostic evidence.
+---
 
-ANALYSIS PROCESS
-Step 1 — Identify strategic issues.
-A strategic issue is a pattern of related problems sharing the same underlying root — a recurring habit, gap, or belief that explains multiple specific instances. Name and define each strategic issue precisely. There is no fixed number; identify as many as the data supports.
-For each strategic issue:
-Strategic Problem: Define the overarching issue, its scope, and the evidence that it exists. Cite evidence from all three sources above. Label each piece of evidence as observable or inference.
-Strategic Solution: Describe what the tutor did at a systemic level to address this issue — not individual fixes, but the overarching approach. Be specific about actual tutor actions, framing choices, and sequencing decisions. If the session contains no strategic solution for a given issue, note that explicitly.
-Parent Distillation: A plain-English summary of this strategic issue and its solution for a non-technical parent audience. No jargon, no timestamps, no badges. Use analogies where helpful.
-Step 2 — For each strategic issue, identify tactical problems.
-A tactical problem is a specific, discrete instance that is evidence of the overarching strategic issue. For each:
-State the tactical problem precisely.
-Classify its error origin: organic, lesson-induced, or mixed.
-If mixed: identify and separately flag the genuine sub-component within the card.
-Student-side evidence: What the student said or did. Quote or closely paraphrase with timestamp or location reference.
-Tutor-side evidence: For organic errors, cite the tutor's diagnostic response (what the tutor said or did after observing the error, before the solution). For lesson-induced errors, cite the tutor's setup (what the tutor deliberately structured or withheld). Include both if both are present.
-Label all evidence as observable or inference.
-Tactical solution: What specific action did the tutor take to address this instance? Describe the exact technique, explanation, or demonstration — not a generic summary.
-For observable evidence: focus on input/output behavior — what the student or tutor said or did. Do not explain why unless inference is required.
-For inferred evidence: cite the specific observable fact that supports the inference and state the inferential step explicitly.
+## Who this report is for
 
-OUTPUT FORMAT
-Produce a complete, self-contained HTML file. The visual design must follow this hierarchy:
-Page level: Clean off-white background. Maximum-width centered container. Serif body font for prose; sans-serif for labels, badges, and metadata.
-Title block: Report title and session metadata (subject, student name if available, speaker roles, session duration if available) at the top of the page.
-Label key: Immediately after the title, before any analysis. Displayed as a multi-column grid — one column per badge category. Three categories: Error Origin, Evidence Source, Evidence Type. Each badge is shown with its color and a full definition sentence explaining how that label is decided and when it is used. Badges are small, pill-shaped, color-coded inline labels. Each category uses a distinct color family; badges within a category are visually distinct from each other. The key must be complete enough that a reader encountering the report cold can understand every label without external reference.
-Strategic issue sections: Each begins with a full-width, visually prominent section header (dark background, light text) that clearly separates it from adjacent sections. Inside each section, in order:
-Strategic Problem block — warm-tinted background (light orange/amber), colored left border. Contains the strategic problem definition and all supporting evidence with badges.
-Strategic Solution block — cool-tinted background (light green), colored left border. Contains the tutor's systemic response, specific and detailed.
-Parent Distillation box — visually distinct from the tutor-level content above. Dashed or dotted border, different tint (light blue). Clearly labeled (e.g., "FOR PARENT COMMUNICATION"). Plain English only — no badges, no timestamps, no jargon.
-Tactical group — a labeled sub-section below the parent box, containing all tactical cards for this strategic issue.
-Tactical cards: Each tactical problem is its own bordered card. Card header contains the tactical problem title and origin badge; the header is visually distinct from the card body (e.g., lightly shaded). Card body contains, in order:
-Student-side evidence row: source badge + evidence type badge + italic quote block with timestamp + brief contextual note if needed.
-Tutor-side evidence row(s): source badge (diagnostic or setup) + evidence type badge + quote or description.
-Sub-component block if mixed: amber/yellow tint, clearly labeled "Genuine Sub-Component."
-Tactical solution block: green tint, colored left border, labeled "Tactical Solution." Contains the specific technique or action the tutor used.
-Quote blocks: Italic text, subtle left border, slightly shaded background. Timestamps inline in lighter monospace style.
-Footer: Repeat session metadata. Note that all claims are cited and all evidence is labeled.
+A parent or a video creator who has never tutored. They need to understand:
+- What the student was doing wrong before the session
+- Why it was wrong
+- What the tutor changed
+- Whether the change worked
 
-CONTENT AND QUALITY REQUIREMENTS
-Prefer more information over less. If a tactical moment has multiple dimensions, include all of them.
-Every claim must be supported by cited evidence. Never make an assertion without pointing to a specific moment in the data.
-Do not collapse distinct tactical problems into one because they share surface similarity. Each discrete instance deserves its own card.
-Do not limit tactical problems to moments where the student made an explicit error. Include moments that reveal a strategic pattern through behavioral signals or tutor framing, even if no error occurred.
-Strategic solutions must be specific: describe exactly what the tutor did, not the general category of intervention.
-Parent distillations must be genuinely simplified — no technical terms, no timestamps, no badges. Accessible to someone with no mathematical or pedagogical background.
-For observable evidence: describe what happened (input and output). Do not editorialize about why unless inference is needed.
-For inferential evidence: always cite the specific observable fact the inference is drawn from, state the inferential step, and label it as inference.
-The report must be detailed enough that a different tutor who has never worked with this student could read it and immediately understand: what the student's strategic problems are, which specific instances demonstrate each problem, what the original tutor did to address each problem at both the strategic and tactical level, and which student behaviors are genuine patterns versus artifacts of the lesson design.
+If a tutor needs more detail later, the citations make the report fact-checkable. But the report itself must read cleanly to someone with zero tutoring background.
 
-Output ONLY the raw HTML — no markdown code fences, no preamble, no explanation. Start with <!DOCTYPE html> and end with </html>."""
+---
+
+## Style rules (non-negotiable)
+
+**1. 6th grade reading level.**
+If you must use an SAT-specific term (Command of Evidence, inference, Bluebook, Test Innovators, transposon, etc.), define it in plain English the first time you use it. Example: *"Command of Evidence questions ask the student to pick the line of text that best supports a claim."*
+
+**2. Concrete over abstract.**
+Replace vague words with what they actually look like in behavior.
+- Bad: "The student struggles with focus."
+- Good: "The student picks the first answer that sounds right instead of checking the rest."
+- Bad: "The student lacks confidence in elimination."
+- Good: "The student keeps wrong answers on the table instead of crossing them out."
+
+**3. Short. Active. Direct.**
+- Short sentences. Short paragraphs.
+- Active voice. ("The tutor stopped the student" — not "The student was stopped by the tutor.")
+- No hedging: cut "may have," "seems to," "potentially," "arguably."
+- No filler: if a sentence doesn't change what the reader understands, delete it.
+
+**4. No academic jargon.**
+Cut: synthesis, metacognition, comprehension, scaffolding, engagement, automaticity. Say what actually happened instead.
+
+**5. One example per slot unless a second adds new information.**
+A second example only earns its place if it shows a different failure mode, a different question type, or a different aspect of the same issue. If two examples say the same thing in different words, pick the more relevant one and drop the other. 
+
+**6. Neutral pronouns.**
+Refer to the student as "the student" or "they/them/their." Do not assume gender. This applies to every sentence in the output, including the examples inside tactical cards.
+
+**7. Full context.**
+Any analysis done by an AI for examples, strategic problems, tactical problems, tutor-introduced solutions, etc. should provide enough context so that anyone reading this can understand the tutoring done and the implications of the problems/solutions. 
+---
+
+## Definitions (use these exactly)
+
+**Strategic problem** — A pattern the student does across many questions. The "what they're doing wrong" at a high level.
+
+**Tactical problem** — One specific moment in the session that shows the strategic problem.
+
+**Strategic solution** — The new process the tutor taught to fix the pattern.
+
+**Tactical example (of solution)** — One specific moment where the student used the new process.
+
+### Error origin (badges)
+- **Organic** — The student would have made this error even if the tutor had never said anything. It's a real habit or gap. This is the highest-priority signal.
+- **Lesson-Induced** — The student made this error because the tutor hadn't taught the fix yet. The tutor expected it. It does not mean the student has a deep weakness.
+- **Mixed** — Mostly lesson-induced, but with a real sub-problem inside it. Call out the real sub-problem separately.
+
+### Evidence source (badges)
+- **Student Side** — Something the student said or did.
+- **Tutor Diagnostic** — Something the tutor said or did *after* seeing the student's mistake, to name or probe it.
+- **Tutor Setup** — Something the tutor deliberately structured or held back so the student would predictably stumble. Only used for lesson-induced errors.
+
+### Evidence type (badges)
+- **Observable** — Directly quoted or closely paraphrased from the transcript. On the record.
+- **Inference** — Read from context (tutor framing, sequencing, word choice). When using this, cite the specific observable fact it's based on and say what the inferential step is.
+
+---
+
+## How to find strategic issues
+
+A strategic issue is a pattern. To find one, look for the same root habit showing up in two or more places in the transcript. The root can show up as:
+1. An in-session error or wrong answer.
+2. A behavior signal — hesitation, "I don't know," holding on to a wrong answer, jumping to the answer choices, etc.
+3. A tutor framing choice — what the tutor chose to teach first, a tutor-flagged prior weakness, what the tutor demonstrated instead of letting the student try.
+
+Use all three. Don't only count moments where the student wrote a wrong letter on the page.
+
+---
+
+## Output structure (follow exactly)
+
+Output a markdown file. Use the structure below. Do not add extra sections. Do not rename headers.
+
+```
+# SAT [Subject] Session Report
+
+**Student:** [name or "Not stated"]
+**Date:** [date or "Not stated"]
+**Duration:** [duration or "Not stated"]
+**Topics covered:** [comma-separated list]
+
+---
+
+## Label key
+
+**Error origin** — `Organic` (real habit) · `Lesson-Induced` (expected by lesson) · `Mixed` (lesson-induced with a real sub-problem inside)
+
+**Evidence source** — `Student Side` (student said/did) · `Tutor Diagnostic` (tutor named the problem after seeing it) · `Tutor Setup` (tutor planned the stumble)
+
+**Evidence type** — `Observable` (quoted/paraphrased from transcript) · `Inference` (read from context — must cite the observable fact behind it)
+
+---
+
+## Strategic Issue 1: [Name]
+
+### 1. Before — How the student was solving these questions
+
+[A bullet list describing the student's default process — what they actually did, step by step, before the tutor stepped in. 3–5 bullets. One short sentence each. Just the steps. No judgment yet. *Style: 6th grade reading level. Define any SAT term the first time you use it. Neutral pronouns ("the student" / "they"). No hedging words.*]
+
+### 2. Why that default doesn't work
+
+[One sentence stating the core failure in plain English.  *6th grade reading level wording. Concrete behavior, not abstract nouns. No hedging.*]
+
+**Example: [short label for the moment]**
+`Origin: [badge]`
+
+- **Student Side** · `[Observable | Inference]`
+  > *"[direct quote]"* `[timestamp]`
+  [One sentence of context if needed. *Neutral pronouns. No hedging.*]
+
+- **Tutor Diagnostic** (or **Tutor Setup**) · `[Observable | Inference]`
+  > *"[direct quote]"* `[timestamp]`
+  [One sentence of context if needed. *Neutral pronouns. No hedging.*]
+
+- **Genuine sub-component** (only if origin is Mixed)
+  [One paragraph naming the real sub-problem inside this mostly-lesson-induced moment. *Concrete behavior, not abstract nouns.*]
+
+[Only add a second example if it shows a different failure mode, different question type, or different aspect. Otherwise stop here.]
+
+### 3. What the tutor changed
+
+[A numbered list of the steps in the new process the tutor taught. These steps for the new process should be generalizable for every tactical example found under each strategic issue; a strategic solution. Each step is one short sentence. Include every distinct step the tutor specified — no more, no less. *6th grade level wording. Active voice. Define any SAT term the first time it appears here if not already defined above.*]
+
+### 4. After — The student using the new process
+
+**Example: [short label for the moment]**
+
+- **Student Side** · `[Observable | Inference]`
+  > *"[direct quote]"* `[timestamp]`
+  [One short sentence of what changed in their process compared to the Before. *6th grade. Neutral pronouns. Show the change, don't just claim it. No hedging.*]
+
+- **Tutor Diagnostic** · `[Observable | Inference]`
+  > *"[direct quote]"* `[timestamp]`
+  [One short sentence of context if needed. *Neutral pronouns. No hedging.*]
+
+[Only add a second example if it adds new information. If the session contains no example of the student using the solution successfully, write exactly: *"The session did not contain a clear example of the student applying this solution on their own."* Do not invent one.]
+
+---
+
+## Strategic Issue 2: [Name]
+
+[Same four-part structure.]
+
+---
+
+[Repeat for each strategic issue. Order strategic issues by how much of the session they took up — the biggest one first.]
+
+---
+
+## Footer
+
+**Student:** [name] · **Date:** [date] · **Duration:** [duration]
+
+All quotes are cited with timestamps from the transcript.
+```
+
+---
+
+## Citation format
+
+Every quote uses this exact format:
+
+> *"the quoted words"* `[MM:SS]` or `[HH:MM:SS]`
+
+- Italic for the quote.
+- Backtick-wrapped timestamp right after the closing quote mark.
+- Use the timestamp from the transcript. If the transcript uses a different time format, match it.
+- Closely paraphrase only when a direct quote would be too long. Mark paraphrases by dropping the italics but keeping the timestamp.
+
+---
+
+## Quality bar
+
+Before you submit, check each of these:
+
+1. **Every claim is cited.** Every "the student did X" or "the tutor said Y" has a quote or paraphrase with a timestamp.
+2. **No claim without evidence.** If you can't cite it, cut it.
+3. **One example per slot unless a second adds new information.** Re-read your tactical examples. If two say the same thing, delete the weaker one.
+4. **6th grade reading level.** Read each sentence out loud. If a 12-year-old wouldn't follow it, rewrite it.
+5. **Every SAT-specific term is defined the first time.** Search the document for jargon. Define or replace.
+6. **Before and After are clearly different.** The reader should be able to look at section 1 and section 4 and see what changed in the student's process. If they look the same, you haven't shown the change.
+7. **Lesson-induced vs. organic is honest.** Per the session context's error interpretation rule, don't label a lesson-induced stumble as organic. Don't label a real weakness as lesson-induced just because it came up after a strategy was taught.
+8. **Neutral pronouns throughout.** Search for "she," "her," "he," "his," "him." Replace with "the student" or "they/them/their." No exceptions.
+9. **If a section is short, leave it short.** Don't pad. A real session has uneven sections.
+
+---
+
+## Things to avoid
+
+- **No "For Parent Communication" callout boxes.** The whole report is parent-readable.
+- **No vague nouns** (engagement, focus, comprehension, synthesis, confidence). Replace with the specific behavior. "Confidence" → "the student crosses out wrong answers and commits."
+- **No hedging** ("may have," "seems," "potentially," "arguably"). State what the evidence shows.
+- **No invented examples.** If the session didn't show the student using the solution, say so. Do not fabricate an "After" moment.
+- **No collapsing distinct tactical moments into one.** If two moments are genuinely different, they each get their own example block — subject to the "second example must add new information" rule.
+- **No editorializing observable evidence.** For observable evidence, describe input and output. Save the "why" for inferences, and label them. """
